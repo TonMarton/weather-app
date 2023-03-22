@@ -2,11 +2,6 @@ import React, { ChangeEvent, useState } from 'react';
 import { useLoaderData, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
-type NewCapitalState = {
-  selectedOption?: string | null;
-  suggestedOptions?: string[];
-};
-
 const NewCapitalContainer = styled.div`
   margin-top: 10vh;
   display: flex;
@@ -43,6 +38,10 @@ const ResultItem = styled.button`
   color: ${(props) => props.theme.colors.primary};
   background-color: inherit;
   border: none;
+
+  &.selected {
+    background-color: ${(props) => props.theme.colors.primaryDark};
+  }
 `;
 
 const SaveButton = styled.button`
@@ -59,55 +58,61 @@ const SaveButton = styled.button`
 export default function NewCapital() {
   const navigate = useNavigate();
   const capitals = useLoaderData() as string[];
-  const [state, setState] = useState<NewCapitalState>();
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCapital, setSelectedCapital] = useState<string | null>(null);
+  const [suggestedCapitals, setSuggestedCapitals] = useState<string[]>([]);
+
+  const findCapitals = function findMatchingCapitals(
+    newSearchTerm: string,
+  ): string[] {
+    const matcher = new RegExp(`${newSearchTerm}`, 'gi');
+    let count = 0;
+    return capitals.filter((c: string) => {
+      if (!newSearchTerm || count > 8) return false;
+      if (c.match(matcher)) {
+        count += 1;
+        return true;
+      }
+      return false;
+    });
+  };
+
   const change = function changeSearchTerm(
     event: ChangeEvent<HTMLInputElement>,
   ) {
-    let count = 0;
-    const searchTerm = event.target.value;
-    const matcher = new RegExp(`${searchTerm}`, 'gi');
-    setState({
-      selectedOption: null,
-      suggestedOptions: capitals.filter((c: string) => {
-        if (!searchTerm || count > 8) return false;
-        if (c.match(matcher)) {
-          count += 1;
-          return true;
-        }
-        return false;
-      }),
-    });
+    const val = event.target.value;
+    setSearchTerm(event.target.value);
+    const newSuggestedCapitals = val !== '' ? findCapitals(val) : [];
+    setSuggestedCapitals(newSuggestedCapitals);
+    if (selectedCapital && !newSuggestedCapitals.includes(selectedCapital)) {
+      setSelectedCapital(null);
+    }
   };
-  const generateResults = function generateResults(
-    suggestedCapitals?: string[],
-  ) {
-    return suggestedCapitals?.map((c: string) => (
+
+  const buildResultItems = function buildSearchResultItems() {
+    return suggestedCapitals.map((c: string) => (
       <ResultItem
         type="button"
         onClick={(event) => {
-          setState({
-            selectedOption: event.currentTarget.textContent,
-            suggestedOptions: state?.suggestedOptions,
-          });
+          setSelectedCapital(event.currentTarget.textContent);
         }}
+        className={c === selectedCapital ? 'selected' : undefined}
+        key={c}
       >
         {c}
       </ResultItem>
     ));
   };
+
   return (
     <NewCapitalContainer>
       <input onChange={change} type="text" placeholder="Search..." />
-      <ResultsContainer>
-        {generateResults(state?.suggestedOptions)}
-      </ResultsContainer>
-      {state?.selectedOption && (
+      <ResultsContainer>{searchTerm && buildResultItems()}</ResultsContainer>
+      {selectedCapital && (
         <SaveButton
           type="button"
           onClick={() => {
-            if (state?.selectedOption) {
-              navigate(`/weather/${state.selectedOption}`, { replace: true });
-            }
+            navigate(`/weather/${selectedCapital}`, { replace: true });
           }}
         >
           SAVE
