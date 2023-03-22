@@ -42,6 +42,10 @@ const ResultItem = styled.button`
   &.selected {
     background-color: ${(props) => props.theme.colors.primaryDark};
   }
+
+  span {
+    color: ${(props) => props.theme.colors.secondary};
+  }
 `;
 
 const SaveButton = styled.button`
@@ -65,16 +69,33 @@ export default function NewCapital() {
   const findCapitals = function findMatchingCapitals(
     newSearchTerm: string,
   ): string[] {
-    const matcher = new RegExp(`${newSearchTerm}`, 'gi');
+    const startMatcher = new RegExp(`^${newSearchTerm}`, 'i');
     let count = 0;
-    return capitals.filter((c: string) => {
-      if (!newSearchTerm || count > 8) return false;
-      if (c.match(matcher)) {
+
+    const matches = capitals.filter((capital: string) => {
+      if (!newSearchTerm || count >= 8) return false;
+      if (capital.match(startMatcher)) {
         count += 1;
         return true;
       }
       return false;
     });
+    if (count > 8) {
+      return matches;
+    }
+
+    const broadMatcher = new RegExp(`${newSearchTerm}`, 'i');
+    matches.push(
+      ...capitals.filter((c: string) => {
+        if (!newSearchTerm || count >= 8 || matches.includes(c)) return false;
+        if (c.match(broadMatcher)) {
+          count += 1;
+          return true;
+        }
+        return false;
+      }),
+    );
+    return matches;
   };
 
   const change = function changeSearchTerm(
@@ -89,17 +110,28 @@ export default function NewCapital() {
     }
   };
 
+  const buildResultText = function buildSearchResultItemText(capital: string) {
+    const i = capital.toLowerCase().indexOf(searchTerm.toLowerCase());
+    return (
+      <>
+        {capital.substring(0, i)}
+        <span>{capital.substring(i, i + searchTerm.length)}</span>
+        {capital.substring(i + searchTerm.length, capital.length)}
+      </>
+    );
+  };
+
   const buildResultItems = function buildSearchResultItems() {
-    return suggestedCapitals.map((c: string) => (
+    return suggestedCapitals.map((capital: string) => (
       <ResultItem
         type="button"
         onClick={(event) => {
           setSelectedCapital(event.currentTarget.textContent);
         }}
-        className={c === selectedCapital ? 'selected' : undefined}
-        key={c}
+        className={capital === selectedCapital ? 'selected' : undefined}
+        key={capital}
       >
-        {c}
+        {buildResultText(capital)}
       </ResultItem>
     ));
   };

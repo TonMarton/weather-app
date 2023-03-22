@@ -12,11 +12,14 @@ export const capitalsApi = createApi({
   endpoints: (builder) => ({
     getCapitals: builder.query<Array<string>, null>({
       query: () => 'countries/capital',
-      transformResponse: (response: { data: Country[] }) =>
-        response.data
-          .map((country: Country) => country.capital)
-          .filter((capital: string) => capital)
-          .sort(),
+      transformResponse: (response: { data: Country[] }) => [
+        ...new Set(
+          response.data
+            .map((country: Country) => country.capital)
+            .filter((capital: string) => capital)
+            .sort(),
+        ),
+      ],
     }),
   }),
 });
