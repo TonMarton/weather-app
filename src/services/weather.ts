@@ -5,7 +5,7 @@ import { Weather } from '../types';
 const openWeatherMapApiKey = `${process.env.REACT_APP_OPEN_WEATHER_MAP_API_KEY}`;
 
 type WeatherResponse = {
-  weather: [{ description: string; icon: string }];
+  weather: [{ id: number; description: string }];
   main: { temp: number };
   timezone: number;
   sys: {
@@ -25,14 +25,14 @@ export const weatherApi = createApi({
         `weather/?lat=${lat}&lon=${lon}&appid=${openWeatherMapApiKey}&units=metric`,
       transformResponse: (response: WeatherResponse) => {
         const {
-          weather: [{ description, icon }],
+          weather: [{ id, description }],
           main: { temp },
           timezone,
           sys,
         } = response;
         return <Weather>{
           description,
-          icon,
+          icon: `wi wi-owm-${id}`,
           temperature: `${temp.toString().split('.')[0]} °C`,
           timezone,
           sunriseTime: convertEpochToTimeString(sys.sunrise, timezone),

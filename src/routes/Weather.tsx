@@ -13,16 +13,26 @@ const WeatherContainer = styled.div`
   @media (min-width: 768px) {
     margin-top: 100px;
   }
+
+  i {
+    color: ${(props) => props.theme.colors.primaryDark};
+  }
 `;
 
 const Capital = styled.p`
   font-size: 24px;
   font-weight: 600;
   color: ${(props) => props.theme.colors.primaryUltraLight};
+  margin-bottom: 24px;
 
   @media (min-width: 768px) {
     font-size: 48px;
   }
+`;
+
+const Icon = styled.i`
+  font-size: 72px;
+  margin-bottom: 24px;
 `;
 
 const Description = styled.p`
@@ -30,16 +40,17 @@ const Description = styled.p`
 `;
 
 const Temperature = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 16px;
   font-size: 28px;
   color: ${(props) => props.theme.colors.primaryLight};
 `;
 
 const Sunrise = styled.div`
-  font-size: 24px;
-  color: ${(props) => props.theme.colors.primaryLight};
-`;
-
-const Sunset = styled.div`
+  display: flex;
+  gap: 12px;
+  align-items: center;
   font-size: 24px;
   color: ${(props) => props.theme.colors.primaryLight};
 `;
@@ -49,7 +60,6 @@ export default function Weather() {
     weather: WeatherData;
     capitalName: string;
   };
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { description, icon, temperature, timezone, sunriseTime, sunsetTime } =
     weather;
 
@@ -57,17 +67,20 @@ export default function Weather() {
     <WeatherContainer>
       <Clock epochDiffInSeconds={timezone} />
       <Capital>{capitalName}</Capital>
-      <i className="wi wi-rain" />
+      <Icon className={icon} />
       <Description>{description}</Description>
       <Temperature>
+        <i className="wi wi-thermometer" />
         <p>{temperature}</p>
       </Temperature>
       <Sunrise>
+        <i className="wi wi-sunrise" />
         <p>{sunriseTime}</p>
       </Sunrise>
-      <Sunset>
+      <Sunrise>
+        <i className="wi wi-sunset" />
         <p>{sunsetTime}</p>
-      </Sunset>
+      </Sunrise>
     </WeatherContainer>
   );
 }

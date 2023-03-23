@@ -1,4 +1,5 @@
 import { createGlobalStyle } from 'styled-components';
+import './assets/weather-icons/weather-icons.min.css';
 
 const GlobalStyle = createGlobalStyle`
   body {
