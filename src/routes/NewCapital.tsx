@@ -1,6 +1,8 @@
 import React, { ChangeEvent, useState } from 'react';
 import { useLoaderData, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { useAppDispatch } from '../store';
+import { saveCapital } from '../actions';
 
 const NewCapitalContainer = styled.div`
   margin-top: 10vh;
@@ -62,9 +64,11 @@ const SaveButton = styled.button`
 export default function NewCapital() {
   const navigate = useNavigate();
   const capitals = useLoaderData() as string[];
+  const dispatch = useAppDispatch();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCapital, setSelectedCapital] = useState<string | null>(null);
   const [suggestedCapitals, setSuggestedCapitals] = useState<string[]>([]);
+  const [isSaving, setIsSaving] = useState<boolean>(false);
 
   const findCapitals = function findMatchingCapitals(
     newSearchTerm: string,
@@ -130,22 +134,35 @@ export default function NewCapital() {
         }}
         className={capital === selectedCapital ? 'selected' : undefined}
         key={capital}
+        disabled={isSaving}
       >
         {buildResultText(capital)}
       </ResultItem>
     ));
   };
 
+  const save = async function saveNewCapital(capitalName: string) {
+    setIsSaving(true);
+    dispatch(saveCapital(capitalName));
+    navigate(`/weather/${capitalName}`, { replace: true });
+  };
+
   return (
     <NewCapitalContainer>
-      <input onChange={change} type="text" placeholder="Search..." />
+      <input
+        onChange={change}
+        type="text"
+        placeholder="Search..."
+        disabled={isSaving}
+      />
       <ResultsContainer>{searchTerm && buildResultItems()}</ResultsContainer>
       {selectedCapital && (
         <SaveButton
           type="button"
           onClick={() => {
-            navigate(`/weather/${selectedCapital}`, { replace: true });
+            save(selectedCapital);
           }}
+          disabled={isSaving}
         >
           SAVE
         </SaveButton>

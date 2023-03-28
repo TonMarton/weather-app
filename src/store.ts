@@ -1,4 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
+import { useDispatch } from 'react-redux';
 import reducer from './reducer';
 import { weatherApi } from './services/weather';
 import { capitalsApi } from './services/capitals';
@@ -21,3 +22,4 @@ export const store = configureStore({
 
 export type AppState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
+export const useAppDispatch: () => AppDispatch = useDispatch;
