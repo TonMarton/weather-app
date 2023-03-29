@@ -27,8 +27,7 @@ export async function weatherLoader({ params }: LoaderFunctionArgs) {
     .reducer.savedCapitals.includes(capitalName);
 
   if (!isCapitalSaved) {
-    // TODO: dispatch exception action
-    return redirect('/');
+    throw new Response('Not Found', { status: 404 });
   }
 
   let coordinates: Coordinate;
