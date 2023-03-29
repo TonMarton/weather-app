@@ -5,7 +5,8 @@ import { useAppDispatch } from '../store';
 import { saveCapital } from '../actions';
 
 const NewCapitalContainer = styled.div`
-  margin-top: 10vh;
+  min-height: 100vh;
+  padding-top: 20vh;
   display: flex;
   justify-content: top;
   align-items: center;

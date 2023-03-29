@@ -27,7 +27,11 @@ export async function weatherLoader({ params }: LoaderFunctionArgs) {
     .reducer.savedCapitals.includes(capitalName);
 
   if (!isCapitalSaved) {
-    throw new Response('Not Found', { status: 404 });
+    throw new Response('Not found', {
+      status: 404,
+      statusText:
+        'Capital not found, add the capitals and access them through the home page!',
+    });
   }
 
   let coordinates: Coordinate;

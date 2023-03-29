@@ -3,12 +3,14 @@ import { RevolvingDot } from 'react-loader-spinner';
 import styled, { useTheme } from 'styled-components';
 
 const SpinnerContainer = styled.div`
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   position: absolute;
   display: flex;
   align-items: center;
   justify-content: center;
+  background-color: ${(props) =>
+    props.theme.colors.primaryUltraLightTransparent};
 
   & > div {
     border-radius: 16px;

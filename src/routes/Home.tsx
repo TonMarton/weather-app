@@ -9,7 +9,7 @@ type HomeProps = {
 };
 
 const HomeContainer = styled.div`
-  min-height: 90vh;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;

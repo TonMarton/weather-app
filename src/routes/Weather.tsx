@@ -5,14 +5,12 @@ import { Weather as WeatherData } from '../types';
 import Clock from '../components/Clock';
 
 const WeatherContainer = styled.div`
+  min-height: 100vh;
+  padding-top: 5vh;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
-
-  @media (min-width: 768px) {
-    margin-top: 100px;
-  }
 
   i {
     color: ${(props) => props.theme.colors.primaryDark};

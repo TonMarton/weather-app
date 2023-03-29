@@ -16,13 +16,18 @@ const BackButton = styled.button`
   border: none;
 `;
 
+const Header = styled.header`
+  position: absolute;
+`;
+
 export default function Layout() {
   const navigate = useNavigate();
   const navigation = useNavigation();
   const location = useLocation();
   return (
     <>
-      <header>
+      {navigation.state === 'loading' && <LoadingSpinner />}
+      <Header>
         {location.pathname !== '/' && (
           <BackButton
             type="button"
@@ -32,9 +37,8 @@ export default function Layout() {
             <img src={chevronLeft} alt="Navigate back" />
           </BackButton>
         )}
-      </header>
+      </Header>
       <main>
-        {navigation.state === 'loading' && <LoadingSpinner />}
         <Outlet />
       </main>
     </>
